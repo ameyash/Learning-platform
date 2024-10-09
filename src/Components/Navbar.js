@@ -51,6 +51,7 @@ const Navbar = () => {
 
     const handalLogout = ()=>{
         localStorage.removeItem('token'); // Clear the token from local storage
+        localStorage.removeItem('user'); // Clear the user from local storage
         navigate('/login'); // Redirect to the login page
         setIsOpen(false);
     }
