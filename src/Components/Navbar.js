@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Bell, ChevronDown } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
+import profile from './assets/profile.png';
+
 const Navbar = () => {
     // State to track the current active nav item
     const location = useLocation();
@@ -49,7 +51,7 @@ const Navbar = () => {
         setActiveNavItem(name);
     };
 
-    const handalLogout = ()=>{
+    const handalLogout = () => {
         localStorage.removeItem('token'); // Clear the token from local storage
         localStorage.removeItem('user'); // Clear the user from local storage
         navigate('/login'); // Redirect to the login page
@@ -101,8 +103,9 @@ const Navbar = () => {
                                     >
                                         <span className="sr-only">Open user menu</span>
                                         <img
+                                            id='profile-pic'
                                             className="h-8 w-8 rounded-full"
-                                            src="/placeholder.svg?height=32&width=32"
+                                            src={profile}
                                             alt="User profile"
                                         />
                                         <ChevronDown className="ml-1 h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -117,23 +120,16 @@ const Navbar = () => {
                                         style={{ zIndex: "1" }}
                                     >
                                         <a
-                                            href="#"
+                                            href="/profile"
                                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                             role="menuitem"
                                         >
                                             Your Profile
                                         </a>
-                                        <a
-                                            href="#"
-                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                            role="menuitem"
-                                        >
-                                            Settings
-                                        </a>
                                         <button
                                             onClick={() => handalLogout()} // Toggle the dropdown menu
                                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                            role="menuitem" style={{width:"100%", display:"flex"}}
+                                            role="menuitem" style={{ width: "100%", display: "flex" }}
                                         >
                                             Sign out
                                         </button>

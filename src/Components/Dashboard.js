@@ -8,6 +8,8 @@ const Dashboard = () => {
     const location = useLocation();
     const [loading, setLoading] = useState(true);
     const [courses, setCourses] = useState([]);
+    const [courseCount, setCourseCount] = useState(0);
+    const [quizCount, setQuizCount] = useState(0);
     const [quizzes, setQuizzes] = useState([]);
     const [error, setError] = useState(null);
     const [completedCourses, setCompletedCourses] = useState(0);
@@ -18,9 +20,11 @@ const Dashboard = () => {
     useEffect(() => {
         const courseApi = 'http://localhost:8080/api/courses';
         const quizApi = 'http://localhost:8080/api/quizzes';
+        const countCourseApi = `http://localhost:8080/api/course/count/${user.email}`;
+        const countQuizApi = `http://localhost:8080/api/quizzes/count/${user.email}`;
 
-        Promise.all([axios.get(courseApi), axios.get(quizApi)])
-            .then(([courseResponse, quizResponse]) => {
+        Promise.all([axios.get(courseApi), axios.get(quizApi), axios.get(countCourseApi), axios.get(countQuizApi)])
+            .then(([courseResponse, quizResponse, countCourseResponse, countQuizResponse]) => {
                 const updatedCourses = courseResponse.data.map((course) => ({
                     ...course,
                     title: course.title.length > 20 ? course.title.substring(0, 20) + "..." : course.title,
@@ -33,6 +37,8 @@ const Dashboard = () => {
                 const pendingQuizzes = quizResponse.data.filter((quiz) => quiz.status === 'Pending');
                 setQuizzes(pendingQuizzes.sort(() => 0.5 - Math.random()).slice(0, 4));
                 setTotalQuizzes(quizResponse.data.length);
+                setCourseCount(countCourseResponse.data);
+                setQuizCount(countQuizResponse.data);
                 setLoading(false);
             })
             .catch((error) => {
@@ -47,13 +53,13 @@ const Dashboard = () => {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            {
+            {/* {
                 user ? <header className="bg-white shadow">
                     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         <h1 className="text-3xl font-bold text-gray-900">Welcome {user.firstName} to Your Learning Dashboard</h1>
                     </div>
                 </header>: <></>
-            }
+            } */}
 
             <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
                 {/* Hero Section */}
@@ -62,15 +68,15 @@ const Dashboard = () => {
                         <div className="flex items-center space-x-4">
                             <Book className="h-10 w-10" />
                             <div>
-                                <h2 className="text-2xl font-bold">{completedCourses}</h2>
-                                <p>Courses Completed</p>
+                                <h2 className="text-2xl font-bold">{courseCount}</h2>
+                                <p>Courses Enrolled</p>
                             </div>
                         </div>
                         <div className="flex items-center space-x-4">
                             <Trophy className="h-10 w-10" />
                             <div>
-                                <h2 className="text-2xl font-bold">{totalQuizzes}</h2>
-                                <p>Total Quizzes</p>
+                                <h2 className="text-2xl font-bold">{quizCount}</h2>
+                                <p>Total Quizzes Taken</p>
                             </div>
                         </div>
                         <div className="flex items-center space-x-4">

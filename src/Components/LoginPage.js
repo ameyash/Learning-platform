@@ -1,123 +1,182 @@
-// LoginPage.js
-import axios from 'axios';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useUser } from './UserContext'; // Import the UserContext
+'use client'
+
+import React, { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Sun, Moon, Mail, Lock, Eye, EyeOff, Github, Twitter } from 'lucide-react'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import { useUser } from './UserContext'
+
+const learningFacts = [
+  "Did you know? The human brain can process images in as little as 13 milliseconds!",
+  "Fun fact: Learning a new skill can increase the density of white matter in your brain.",
+  "Interesting: The 'forgetting curve' shows we forget 50% of new information within an hour.",
+  "Fact: Regular exercise can improve your memory and thinking skills.",
+]
 
 export default function LoginPage() {
-    const navigate = useNavigate();
-    const { setUser } = useUser(); // Get the setUser function from context
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+  const navigate = useNavigate()
+  const { setUser } = useUser()
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [isDarkMode, setIsDarkMode] = useState(false)
+  const [fact, setFact] = useState('')
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError(''); // Clear previous error message
-        try {
-            const response = await axios.post('http://localhost:8080/api/auth/login', {
-                username,
-                password,
-            });
-            localStorage.setItem('token', response.data.jwt);
-            localStorage.setItem('user', JSON.stringify(response.data));
-            setUser(response.data); // Store user data in context
-            navigate('/'); // Redirect after successful login
-        } catch (err) {
-            if (err.response && err.response.status === 401) {
-                setError('Invalid credentials');
-            } else {
-                setError('An unexpected error occurred. Please try again later.');
-            }
-            console.log(err);
-        }
-    };
+  useEffect(() => {
+    setFact(learningFacts[Math.floor(Math.random() * learningFacts.length)])
+  }, [])
 
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-                <h2 className="text-2xl font-bold text-center mb-4">Login</h2>
-                <p className="text-center text-gray-600 mb-6">Enter your credentials to access your account</p>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                        <input
-                            id="email"
-                            type="email"
-                            placeholder="you@example.com"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            required
-                            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
-                              focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                        />
-                    </div>
-                    <div style={{ display: "grid", justifyItems: "start" }}>
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-                        <input
-                            id="password"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
-                              focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                        />
-                        {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
-                    </div>
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                            <input
-                                id="remember-me"
-                                name="remember-me"
-                                type="checkbox"
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                            />
-                            <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                                Remember me
-                            </label>
-                        </div>
-                        <div className="text-sm">
-                            <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
-                                Forgot your password?
-                            </a>
-                        </div>
-                    </div>
-                    <button
-                        type="submit"
-                        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    >
-                        Sign In
-                    </button>
-                </form>
-                <div className="mt-6">
-                    <div className="relative">
-                        <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-gray-300"></div>
-                        </div>
-                        <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-white text-gray-500">Or continue with</span>
-                        </div>
-                    </div>
-                    <div className="mt-6">
-                        <button
-                            onClick={() => console.log('Google Sign-In attempted')}
-                            className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                        >
-                            <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z" />
-                            </svg>
-                            Sign in with Google
-                        </button>
-                    </div>
-                </div>
-                <p className="mt-8 text-center text-sm text-gray-600">
-                    Don't have an account?{' '}
-                    <a href="/signup" className="font-medium text-blue-600 hover:text-blue-500">
-                        Sign up
-                    </a>
-                </p>
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    try {
+      const response = await axios.post('http://localhost:8080/api/auth/login', {
+        username,
+        password,
+      })
+      localStorage.setItem('token', response.data.jwt)
+      localStorage.setItem('user', JSON.stringify(response.data))
+      setUser(response.data)
+      navigate('/')
+    } catch (err) {
+      setError('Invalid credentials. Please try again.')
+      console.error(err)
+    }
+  }
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode)
+  }
+
+  return (
+    <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
+      <div className="absolute top-4 right-4">
+        <button
+          onClick={toggleTheme}
+          className={`p-2 rounded-full ${isDarkMode ? 'bg-yellow-400 text-gray-900' : 'bg-gray-800 text-yellow-400'}`}
+        >
+          {isDarkMode ? <Sun size={24} /> : <Moon size={24} />}
+        </button>
+      </div>
+      <div className="w-full max-w-4xl flex shadow-2xl overflow-hidden rounded-xl">
+        <motion.div
+          className="w-2/5 bg-gradient-to-br from-blue-600 to-purple-600 p-12 flex flex-col justify-between"
+          initial={{ x: -50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div>
+            <h1 className="text-4xl font-bold text-white mb-6">Welcome Back!</h1>
+            <p className="text-white text-lg mb-8">Continue your learning journey and unlock your potential.</p>
+          </div>
+          <div>
+            <p className="text-white text-sm italic">{fact}</p>
+          </div>
+        </motion.div>
+        <motion.div
+          className={`w-3/5 p-12 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}
+          initial={{ x: 50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <h2 className="text-3xl font-semibold mb-6">Sign In</h2>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium mb-2">Email</label>
+              <div className="relative">
+                <input
+                  id="email"
+                  type="email"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  className={`w-full px-4 py-2 rounded-md ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-900'} focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                  placeholder="you@example.com"
+                />
+                <Mail className="absolute right-3 top-2.5 text-gray-400" size={20} />
+              </div>
             </div>
-        </div>
-    );
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium mb-2">Password</label>
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className={`w-full px-4 py-2 rounded-md ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-900'} focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                  placeholder="••••••••"
+                />
+                <Lock className="absolute right-10 top-2.5 text-gray-400" size={20} />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-2.5 text-gray-400"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
+            <AnimatePresence>
+              {error && (
+                <motion.p
+                  className="text-red-500 text-sm"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                >
+                  {error}
+                </motion.p>
+              )}
+            </AnimatePresence>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <input
+                  id="remember-me"
+                  type="checkbox"
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label htmlFor="remember-me" className="ml-2 block text-sm">Remember me</label>
+              </div>
+              <a href="#" className="text-sm text-blue-600 hover:underline">Forgot password?</a>
+            </div>
+            <motion.button
+              type="submit"
+              className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Sign In
+            </motion.button>
+          </form>
+          <div className="mt-8">
+            <p className="text-center text-sm mb-4">Or sign in with</p>
+            <div className="flex justify-center space-x-4">
+              <motion.button
+                className={`p-2 rounded-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-800'}`}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <Github size={24} />
+              </motion.button>
+              <motion.button
+                className={`p-2 rounded-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-800'}`}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <Twitter size={24} />
+              </motion.button>
+            </div>
+          </div>
+          <p className="mt-8 text-center text-sm">
+            Don't have an account?{' '}
+            <a href="/signup" className="text-blue-600 hover:underline">Sign up</a>
+          </p>
+        </motion.div>
+      </div>
+    </div>
+  )
 }

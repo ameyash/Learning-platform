@@ -24,7 +24,6 @@ export default function QuizList() {
                 const quizzesWithStatus = await Promise.all(
                     quizzesData.map(async (quiz) => {
                         try {
-                            console.log(quiz.id, user.email);
                             const statusResponse = await axios.get(
                                 `http://localhost:8080/api/quizzes/${quiz.id}/user/${user.email}/status`
                             );
@@ -171,8 +170,8 @@ export default function QuizList() {
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     <span
                                         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${quiz.status === 'Completed'
-                                                ? 'bg-green-100 text-green-800'
-                                                : 'bg-yellow-100 text-yellow-800'
+                                            ? 'bg-green-100 text-green-800'
+                                            : 'bg-yellow-100 text-yellow-800'
                                             }`}
                                     >
                                         {quiz.status === 'Completed' ? (
@@ -197,10 +196,10 @@ export default function QuizList() {
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     <span
                                         className={`px-2 py-1 rounded text-xs font-semibold ${quiz.difficulty === 'Easy'
-                                                ? 'bg-green-100 text-green-800'
-                                                : quiz.difficulty === 'Medium'
-                                                    ? 'bg-yellow-100 text-yellow-800'
-                                                    : 'bg-red-100 text-red-800'
+                                            ? 'bg-green-100 text-green-800'
+                                            : quiz.difficulty === 'Medium'
+                                                ? 'bg-yellow-100 text-yellow-800'
+                                                : 'bg-red-100 text-red-800'
                                             }`}
                                     >
                                         {quiz.difficulty}
@@ -212,23 +211,29 @@ export default function QuizList() {
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     {token ? (
-                                        <a
-                                            href={`/quizzes/${quiz.id}`}
-                                            className={`inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md ${quiz.status === 'Completed'
-                                                    ? 'text-indigo-700 bg-indigo-100 hover:bg-indigo-200'
-                                                    : 'text-white bg-indigo-600 hover:bg-indigo-700'
-                                                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
-                                        >
-                                            {quiz.status === 'Completed' ? 'Review' : 'Take Quiz'}
-                                        </a>
+                                        quiz.status === 'Completed' ? (
+                                            <button
+                                                disabled
+                                                className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-500 bg-gray-100 cursor-not-allowed"
+                                            >
+                                                Completed
+                                            </button>
+                                        ) : (
+                                            <a
+                                                href={`/quizzes/${quiz.id}`}
+                                                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                            >
+                                                Take Quiz
+                                            </a>
+                                        )
                                     ) : (
-                                        <a
-                                            href="/login"
-                                            className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                        <button
+                                            disabled
+                                            className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-100 cursor-not-allowed"
                                         >
                                             <Lock className="w-4 h-4 mr-1" />
                                             Login to Take
-                                        </a>
+                                        </button>
                                     )}
                                 </td>
                             </tr>

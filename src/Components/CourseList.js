@@ -50,8 +50,6 @@ export default function CoursesPage() {
             title: course.title.length > 20 ? course.title.substring(0, 20) + "..." : course.title,
             description: course.description.length > 35 ? course.description.substring(0, 35) + "...." : course.description,
         }));
-
-        console.log(updatedCourses);
         setCourses(updatedCourses);
         setVisibleCourses(response.data.slice(0, 8));
         setLoading(false);
@@ -103,10 +101,9 @@ export default function CoursesPage() {
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
             >
-              <option value="all">All Categories</option>
-              <option value="react">React</option>
-              <option value="javascript">JavaScript</option>
-              <option value="node">Node.js</option>
+              <option value="all">All</option>
+              <option value="Development">Development</option>
+              <option value="Design">Design</option>
             </select>
           </div>
         </div>
@@ -124,9 +121,8 @@ export default function CoursesPage() {
               onChange={(e) => setFilter(e.target.value)}
             >
               <option value="all">All</option>
-              <option value="react">React</option>
-              <option value="javascript">JavaScript</option>
-              <option value="node">Node.js</option>
+              <option value="Development">Development</option>
+              <option value="Design">Design</option>
             </select>
           </div>
         </div>

@@ -8,6 +8,8 @@ import CoursePage from './Components/CoursePage';
 import SignUpPage from './Components/SignUpPage';
 import LoginPage from './Components/LoginPage';
 import Quiz from './Components/Quiz';
+import ProfilePage from './Components/ProfilePage';
+import VideoPlayPage from './Components/VideoPlayPage';
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
           <Route path="/quizzes/:id" element={<Quiz />} />
           <Route path="/signUp" element={<SignUpPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/course/play/:id" element={<VideoPlayPage />} />
         </Routes>
       </div>
     </Router>

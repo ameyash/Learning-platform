@@ -25,7 +25,9 @@ export default function Quiz() {
 
   const fetchQuiz = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/quizzes/${id}`);
+      const response = await axios.get(`http://localhost:8080/api/quizzes/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setQuiz(response.data);
       setLoading(false);
     } catch (error) {
@@ -51,7 +53,7 @@ export default function Quiz() {
 
   const handleSubmit = async () => {
     try {
-      await axios.post(`http://localhost:8080/api/quizzes/${id}/user/${user.id}/take`, { answers });
+      await axios.post(`http://localhost:8080/api/quizzes/${id}/user/${user.email}/take`, { answers });
       const score = answers.filter((answer, index) => answer === quiz[index].correctAnswer).length;
       setResult({
         score: score,
